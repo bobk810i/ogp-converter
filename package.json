@@ -1,0 +1,20 @@
+{
+  "name": "ogp-converter",
+  "version": "1.0.0",
+  "description": "Data converting software to the OGP machine.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobk810i/ogp-converter.git"
+  },
+  "author": "Jakub Kołodyński",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bobk810i/ogp-converter/issues"
+  },
+  "homepage": "https://github.com/bobk810i/ogp-converter#readme"
+}
