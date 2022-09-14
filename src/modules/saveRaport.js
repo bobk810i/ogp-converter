@@ -29,6 +29,7 @@ function saveRaport(data, directoryPath, savePath, callback){
         // Read all files in directory
         fs.readdir(directoryPath, (err, filesList)=>{
             let filesCounter = 0;
+            let rowNumber = 1;
             filesList.forEach((file)=>{ // check how many xls or xlsx files they are
                 let name = file.split('.')[1];
                 if(name == 'xls' || name == 'xlsx'){ // check if the file is xls or xlsx
@@ -51,21 +52,29 @@ function saveRaport(data, directoryPath, savePath, callback){
                             XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[cell.index].v]], {origin: `${alphabet[columnCounter]}${rowCounter}`});
                             
                             // Set the column name
-                            // XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[cell.index].v]], {origin: `${alphabet[columnCounter]}1`});
+                            XLSX.utils.sheet_add_aoa(newSheet, [[cell.name]], {origin: `${alphabet[columnCounter]}1`});
 
                             // Set the nominal dimention
-                            // let dataColumn = cell.index[0];
-                            // let nominalColumnRaw = alphabet.indexOf(dataColumn.toUperCase());
-                            // let nominalColumn = parseInt(nominalColumnRaw) - 1;
-                            // XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn]}${cell.index[1]}`].v]], {origin: `${alphabet[columnCounter]}2`});
+                            let dataColumn = cell.index[0]; // split column and row
+                            let nominalColumnRaw = alphabet.indexOf(dataColumn.toUpperCase()); // we have go back in columns 
+                            let nominalColumn = parseInt(nominalColumnRaw) - 1;
+                            let nominalRow = cell.index.substring(1); // remove letter from index to get only row
+                            XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}2`});
 
                             // Set the upper tol. and lower tol.
-                            // XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 4]}${cell.index[1]}`].v]], {origin: `${alphabet[columnCounter]}3`});
-                            // XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 5]}${cell.index[1]}`].v]], {origin: `${alphabet[columnCounter]}4`});
+                            XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 4]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}3`});
+                            XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 5]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}4`});
+
+                            // Set the filename cell
+                            XLSX.utils.sheet_add_aoa(newSheet, [[file.toString()]], {origin: `B${rowCounter}`});
+                            
+                            // Set the row number (from files counter)
+                            XLSX.utils.sheet_add_aoa(newSheet, [[rowNumber]], {origin: `A${rowCounter}`});
 
                             columnCounter = columnCounter + 1; // switch to another column
                         })
                         rowCounter = rowCounter + 1; // switch to another row
+                        rowNumber = rowNumber + 1; // add to the files counter
 
                      }
                 })

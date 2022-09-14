@@ -45,17 +45,29 @@ saveButton.addEventListener('click', (e)=>{
             cellsObject.push(obj);
         }
     })
-    if(isEmpty){ // if windows are empty then return an error, if not send data
+
+    let cellsNumber = cells.length;
+    if(cellsNumber <= 24){ // 24 characters from C to Z - limit the quantity od cells
+        if(isEmpty){ // if windows are empty then return an error, if not send data
+            iziToast.show({
+                title: 'Some windows are empty!',
+                color: 'red',
+                timeout: 2500,
+                close: false,
+                pauseOnHover: false,
+            });
+        }else{
+            console.log(cellsObject);
+            ipcRenderer.send('saveRaports', cellsObject);
+        }
+    } else{
         iziToast.show({
-            title: 'Some windows are empty!',
-            color: 'red',
+            title: 'Cells limit reached!',
+            color: 'yellow',
             timeout: 2500,
             close: false,
             pauseOnHover: false,
         });
-    }else{
-        console.log(cellsObject);
-        ipcRenderer.send('saveRaports', cellsObject);
     }
 
 })
