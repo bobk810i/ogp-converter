@@ -10,7 +10,7 @@ const startingRow = 5;
 const startingColumn = 2;
 
 function saveRaport(data, directoryPath, savePath, callback){
-    if(directoryPath != ""){ // check if the directory path exsists
+    if(directoryPath != "" || directoryPath != undefined){ // check if the directory path exsists
         // Create a new file and sheet + add info
         const newFile = XLSX.utils.book_new();
         const newSheet = XLSX.utils.aoa_to_sheet([]);
@@ -43,13 +43,17 @@ function saveRaport(data, directoryPath, savePath, callback){
                      let name = file.split('.')[1];
                      if(name == 'xls' || name == 'xlsx'){
 
-                        const wb = XLSX.readFile(path.join(directoryPath, file));
+                        const wb = XLSX.readFile(path.join(directoryPath, file), {sheetStubs: true});
                         const defaultWorkSheet = DB_elementById(DB_config, 'config', configId);
                         const worksheet = wb.Sheets[defaultWorkSheet.defaultSheetName]; // DEFAULT SHEET NAME FROM DB
 
                         data.forEach((cell)=>{ // write each cell that user wrote in program
                             // Read value from opened file and write it to the new one
-                            XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[cell.index].v]], {origin: `${alphabet[columnCounter]}${rowCounter}`});
+                            if(worksheet[cell.index] != undefined){
+                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[cell.index].v]], {origin: `${alphabet[columnCounter]}${rowCounter}`});
+                            }else{
+                                XLSX.utils.sheet_add_aoa(newSheet, [[""]], {origin: `${alphabet[columnCounter]}${rowCounter}`});
+                            }
                             
                             // Set the column name
                             XLSX.utils.sheet_add_aoa(newSheet, [[cell.name]], {origin: `${alphabet[columnCounter]}1`});
@@ -59,12 +63,25 @@ function saveRaport(data, directoryPath, savePath, callback){
                             let nominalColumnRaw = alphabet.indexOf(dataColumn.toUpperCase()); // we have go back in columns 
                             let nominalColumn = parseInt(nominalColumnRaw) - 1;
                             let nominalRow = cell.index.substring(1); // remove letter from index to get only row
-                            XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}2`});
+                            if(worksheet[`${alphabet[nominalColumn]}${nominalRow}`] != undefined){
+                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}2`});
+                            }else{
+                                XLSX.utils.sheet_add_aoa(newSheet, [[""]], {origin: `${alphabet[columnCounter]}2`});
+                            }
+
 
                             // Set the upper tol. and lower tol.
-                            XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 4]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}3`});
-                            XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 5]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}4`});
-
+                            if(worksheet[`${alphabet[nominalColumn + 4]}${nominalRow}`] != undefined){
+                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 4]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}3`});
+                            }else{
+                                XLSX.utils.sheet_add_aoa(newSheet, [[""]], {origin: `${alphabet[columnCounter]}3`});
+                            }
+                            if(worksheet[`${alphabet[nominalColumn + 5]}${nominalRow}`] != undefined){
+                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn + 5]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}4`});
+                            }else{
+                                XLSX.utils.sheet_add_aoa(newSheet, [[""]], {origin: `${alphabet[columnCounter]}4`});
+                            }
+                            
                             // Set the filename cell
                             XLSX.utils.sheet_add_aoa(newSheet, [[file.toString()]], {origin: `B${rowCounter}`});
                             
@@ -86,9 +103,6 @@ function saveRaport(data, directoryPath, savePath, callback){
             XLSX.writeFile(newFile, savePath);
 
         });
-
-
-
 
         callback({status: true, message: 'Raport saved!'});
     }else{

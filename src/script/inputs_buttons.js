@@ -18,20 +18,39 @@ ipcRenderer.on('chooseRaportsDirectory:res', (err, res)=>{
     
 })
 
-// Add cell button
+// Add cell button and shortcut
 const addCellButton = document.getElementById('add-cell-btn');
 const cellTemplate = document.getElementById('cell-add-template');
 const cellsList = document.querySelector('.cells-selection-list');
+const appWindow = document.querySelector('body');
 addCellButton.addEventListener('click',(e)=>{
+    addCell();
+})
+appWindow.addEventListener('keydown', (e)=>{
+    if(e.key == 'ArrowDown'){ // Arrow Down adds new cell row
+        addCell();
+    }
+    if(e.key == 'Enter'){ // Enter key saves raport
+        saveCells();
+    }
+})
+
+
+function addCell(){
     let template = document.importNode(cellTemplate.content, true);
     cellsList.appendChild(template);
-})
+}
 
 //Save cells button
 const saveButton = document.getElementById('save-button');
 saveButton.addEventListener('click', (e)=>{
+    saveCells();
+})
+
+function saveCells(){
     let cells = document.querySelectorAll('.cells-selection');
     let isEmpty = false;
+    let indexCorrext = true;
     let cellsObject = [];
     cells.forEach((cell)=>{ // list all selected cells
         let cellIndex = cell.querySelector('.cell-index').value;
@@ -40,6 +59,14 @@ saveButton.addEventListener('click', (e)=>{
             isEmpty = true;
         }else{
             let obj = {};
+            if(cellIndex[0].toUpperCase() == cellIndex[0].toLowerCase()){ // check id index was written correctly - first char is a letter
+                indexCorrext = false;
+            }
+            let indexNumber = cellIndex.substring(1);
+            if(indexNumber.toUpperCase() != indexNumber.toLowerCase()){ // check id index was written correctly - the rest is number
+                indexCorrext = false;
+            }
+
             obj["index"] = cellIndex;
             obj["name"] = cellName;
             cellsObject.push(obj);
@@ -57,8 +84,17 @@ saveButton.addEventListener('click', (e)=>{
                 pauseOnHover: false,
             });
         }else{
-            console.log(cellsObject);
-            ipcRenderer.send('saveRaports', cellsObject);
+            if(indexCorrext){
+                ipcRenderer.send('saveRaports', cellsObject);
+            }else{
+                iziToast.show({
+                    title: 'Wrong cell index!',
+                    color: 'red',
+                    timeout: 2500,
+                    close: false,
+                    pauseOnHover: false,
+                });
+            }
         }
     } else{
         iziToast.show({
@@ -69,11 +105,27 @@ saveButton.addEventListener('click', (e)=>{
             pauseOnHover: false,
         });
     }
+}
 
-})
-
-ipcRenderer.on('saveRaports:res', (err, data)=>{
+ipcRenderer.on('saveRaports:res', (err, response)=>{
     // response from saving
+    if(response.status){ // saving correct
+        iziToast.show({
+            title: response.message,
+            color: 'green',
+            timeout: 2500,
+            close: false,
+            pauseOnHover: false,
+        });
+    }else{
+        iziToast.show({ // saving incorrect
+            title: response.message,
+            color: 'red',
+            timeout: 2500,
+            close: false,
+            pauseOnHover: false,
+        });
+    }
 })
 
 

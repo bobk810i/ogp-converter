@@ -49,9 +49,13 @@ ipcMain.on('saveRaports', async (err, data)=>{
         filters:[{ name: 'File', extensions: ['xlsx', 'xls'] }]
     })
     if(!file.canceled){ // check if the saving was canceled
-        saveRaport(data, reportsDirectory, file.filePath, (result)=>{
-            console.log(result);
-        })
+        if(reportsDirectory == undefined){
+            appWindow.webContents.send('saveRaports:res', {status: false, message: 'No directory path!'});
+        }else{
+            saveRaport(data, reportsDirectory, file.filePath, (result)=>{
+                appWindow.webContents.send('saveRaports:res', result);
+            })
+        }
     }
 })
 
