@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OGP Converter</title>
+    <link rel="stylesheet" href="./node_modules/izitoast/dist/css/iziToast.css">
+    <link rel="stylesheet" href="./src/style/global.css">
+    <link rel="stylesheet" href="./src/style/settings.css">
+<body>
+    <div class="back-button-header">
+        <img src="./src/graphics/back-arrow-icon.svg" alt="" id="settings-back-button">
+    </div>
+    <div class="content">
+        <div class="settings-content">
+
+            <div class="settings-content-block">
+                <p>Default sheet name</p>
+                <div class="subtitle">Name of the OGP excel sheet where dimensions are being stored</div>
+                <input type="text" name="default-sheet-name" id="default-sheet-name">
+                <button id="default-sheet-name-save" class="btn-outline-success">Save</button>
+            </div>
+            <div class="settings-content-block">
+                <p>Columns shift</p>
+                <div class="subtitle">How far are constants columns from the measured dimension</div>
+                <div class="shift-input-box">
+                    <div class="inp-box">
+                        <div class="subtitle">Nominal</div>
+                        <input type="number" name="shift-nominal" id="shift-nominal" max="100" min="-100" step="1">
+                    </div>
+                    <div class="inp-box">
+                        <div class="subtitle">Upper tol.</div>
+                        <input type="number" name="shift-upper" id="shift-upper" max="100" min="-100" step="1">
+                    </div>
+                    <div class="inp-box">
+                        <div class="subtitle">Lower tol.</div>
+                        <input type="number" name="shift-lower" id="shift-lower" max="100" min="-100" step="1">
+                    </div>
+                </div>
+                <button id="default-shifts-save" class="btn-outline-success">Save</button>
+            </div>
+            <div class="settings-content-block">
+                <p>Bug fixes | Questions</p>
+                <div class="subtitle">In case of any bugs, errors and questions email <b>jakub.kolodynski@gmail.com</b></div>
+            </div>
+
+        </div>
+    </div>
+    <footer>
+        <div class="version-label"></div>
+    </footer>
+
+    <script src="./node_modules/izitoast/dist/js/iziToast.js"></script>
+    <script src="./src/script/globals.js"></script>
+    <script src="./src/script/settings.js"></script>
+
+</body>
+</html>

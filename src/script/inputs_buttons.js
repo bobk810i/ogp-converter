@@ -286,3 +286,9 @@ newTemplateButton.addEventListener('click', (e)=>{
     cellsList.innerHTML = ''; // clear cells list
     unboldList(); // unbold all the list entries
 })
+
+// Settings
+const settingsButton = document.getElementById('settings-button');
+settingsButton.addEventListener('click', (e)=>{
+    ipcRenderer.send('settings', '');
+})

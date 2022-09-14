@@ -3,8 +3,9 @@ const url = require('url');
 const path = require('path');
 const saveRaport = require('./src/modules/saveRaport');
 const saveTemplate = require('./src/modules/saveTemplate');
-const {DB_templates} = require('./src/database/database');
-const {DB_deleteById} = require('./src/database/DB_functions');
+const {DB_templates, DB_config} = require('./src/database/database');
+const {DB_deleteById, DB_elementById, DB_editElement} = require('./src/database/DB_functions');
+const configId = '6h9ssbnqsl807pnzp';
 
 const {app, BrowserWindow, Menu, ipcMain, dialog} = electron;
 
@@ -84,6 +85,42 @@ ipcMain.on("deleteTemplate:req", (err, id)=>{
         appWindow.webContents.send('deleteTemplate:res', {status: false, message: "Can't delete template! Try again later..."});
     }
     
+})
+
+// Go to Settings page
+ipcMain.on('settings', (err, data)=>{
+    appWindow.loadFile('settings.html');
+}) 
+
+// Go to Main page
+ipcMain.on('mainPage', (err, data)=>{
+    appWindow.loadFile('index.html');
+}) 
+
+// Settings informations
+ipcMain.on('settings-info:req', (err, data)=>{
+    let element = DB_elementById(DB_config, 'config', configId);
+    appWindow.webContents.send('settings-info:res', element);
+})
+
+// Settings - default sheet name
+ipcMain.on('settings-sheet:req', (err, newName)=>{
+    let result = DB_editElement(DB_config, 'config', configId, {"defaultSheetName": newName});
+    if(result){
+        appWindow.webContents.send('settings-sheet:res', {status: true, message: "Saved!"});
+    }else{
+        appWindow.webContents.send('settings-sheet:res', {status: false, message: "Error occured! Try again later..."});
+    }
+})
+
+// Settings default shifts values
+ipcMain.on('settings-shifts:req', (err, data)=>{
+    let result = DB_editElement(DB_config, 'config', configId, data);
+    if(result){
+        appWindow.webContents.send('settings-shifts:res', {status: true, message: "Saved!"});
+    }else{
+        appWindow.webContents.send('settings-shifts:res', {status: false, message: "Error occured! Try again later..."});
+    }
 })
 
 
