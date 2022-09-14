@@ -5,21 +5,31 @@
     <link rel="stylesheet" href="./node_modules/izitoast/dist/css/iziToast.css">
     <link rel="stylesheet" href="./src/style/global.css">
 <body>
+    <div class="save-template-modal-bcg" style="display: none;">
+        <div class="save-template-modal-box">
+            <input id="save-template-input" type="text" placeholder="Template name">
+            <div class="save-template-buttons-box">
+                <button id="save-template-save" class="btn-outline-success">Save</button>
+                <button id="save-template-cancel" class="btn-outline">Cancel</button>
+            </div>
+        </div>
+    </div>
     <header>
         <img class="main-logo" src="./src/graphics/ogp-logo-napis.svg" alt="main-logo" class="app-logo">
         <img class="settings-icon" src="./src/graphics/settings-icon.svg" alt="settings-icon">
     </header>
     <div class="content">
         <div class="saved-box">
-            <input type="search" name="search-saved" placeholder="Search">
-            <div class="saved-outline">
+            <input type="search" name="search-saved" placeholder="Search" id="search-template-input">
+            <button class="btn-outline" id="new-template-button">+ New template</button>
+            <div class="saved-outline" id="search-list">
 
                 <template id="search-list-template">
                     <div class="search-list-element">
-                        <p>Nazwa elementu</p>
+                        <p class="search-item-name" onclick="openTemplate(this.id)"></p>
                         <div class="search-element-icons-box">
                             <!-- <img src="./src/graphics/edit-icon.svg" alt=""> -->
-                            <img src="./src/graphics/delete-icon.svg" alt="">
+                            <img class="search-item-delete" src="./src/graphics/delete-icon.svg" alt="" onclick="deleteTemplate(this.id)">
                         </div>
                     </div>
                 </template>
@@ -60,6 +70,7 @@
 
     <script src="./node_modules/izitoast/dist/js/iziToast.js"></script>
     <script src="./src/script/inputs_buttons.js"></script>
+    <script src="./src/script/listSearch.js"></script>
 
 </body>
 </html>

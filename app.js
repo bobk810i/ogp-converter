@@ -2,6 +2,9 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path');
 const saveRaport = require('./src/modules/saveRaport');
+const saveTemplate = require('./src/modules/saveTemplate');
+const {DB_templates} = require('./src/database/database');
+const {DB_deleteById} = require('./src/database/DB_functions');
 
 const {app, BrowserWindow, Menu, ipcMain, dialog} = electron;
 
@@ -57,6 +60,30 @@ ipcMain.on('saveRaports', async (err, data)=>{
             })
         }
     }
+})
+
+// Save templates
+ipcMain.on("saveTemplate:req", (err, object)=>{
+    saveTemplate(object, (result)=>{
+        appWindow.webContents.send('saveTemplate:res', result);
+    });
+})
+
+// Get templates
+ipcMain.on("templates:req", (err, data)=>{
+    let templates = DB_templates.get('templates').value()
+    appWindow.webContents.send('templates:res', templates);
+})
+
+// Delete template
+ipcMain.on("deleteTemplate:req", (err, id)=>{
+    let result = DB_deleteById(DB_templates, 'templates', id);
+    if(result){
+        appWindow.webContents.send('deleteTemplate:res', {status: true, message: "Template deleted!"});
+    }else{
+        appWindow.webContents.send('deleteTemplate:res', {status: false, message: "Can't delete template! Try again later..."});
+    }
+    
 })
 
 
