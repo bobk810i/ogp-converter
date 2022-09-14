@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OGP Converter</title>
+    <link rel="stylesheet" href="./node_modules/izitoast/dist/css/iziToast.css">
+    <link rel="stylesheet" href="./src/style/global.css">
+<body>
+    <header>
+        <img class="main-logo" src="./src/graphics/ogp-logo-napis.svg" alt="main-logo" class="app-logo">
+        <img class="settings-icon" src="./src/graphics/settings-icon.svg" alt="settings-icon">
+    </header>
+    <div class="content">
+        <div class="saved-box">
+            <input type="search" name="search-saved" placeholder="Search">
+            <div class="saved-outline">
+
+                <template id="search-list-template">
+                    <div class="search-list-element">
+                        <p>Nazwa elementu</p>
+                        <div class="search-element-icons-box">
+                            <!-- <img src="./src/graphics/edit-icon.svg" alt=""> -->
+                            <img src="./src/graphics/delete-icon.svg" alt="">
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+        </div>
+        <div class="data-entry-box">
+            <div class="data-entry-input">
+                <p class="data-entry-name">Raports directory:</p>
+                <!-- <input type="file" value="" name="raports-directory-input" id="raports-directory-input" /> -->
+                <button class="btn-outline" id="raports-directory-button">></button>
+                <p id="raports-directory-input-path"></p>
+            </div>
+            <div class="cells-selection-box">
+                <p>Select cells:</p>
+                <div class="cells-selection-list">
+
+                    <template id="cell-add-template">
+                        <div class="cells-selection">
+                            <input class="cell-index" type="text" name="cell-index" placeholder="Cell" required>
+                            <input class="cell-name" type="text" name="cell-name" placeholder="Data name" required>
+                            <img src="./src/graphics/delete-icon.svg" alt="delete-cell" onclick="this.parentNode.parentNode.removeChild(this.parentNode)">
+                        </div>
+                    </template>
+
+                </div>
+                <button id="add-cell-btn" class="btn-outline add-cell-button">+ Add cell</button>
+            </div>
+            <div class="save-button-box">
+                <button id="save-button" class="btn-outline-success">Save reports</button>
+                <button id="save-template-button" class="btn-outline">Save template</button>
+            </div>
+        </div> 
+    </div>
+    <footer>
+        <div class="version-label">v. 1.0.0</div>
+    </footer>
+
+    <script src="./node_modules/izitoast/dist/js/iziToast.js"></script>
+    <script src="./src/script/inputs_buttons.js"></script>
+
+</body>
+</html>
