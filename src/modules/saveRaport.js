@@ -61,7 +61,7 @@ function saveRaport(data, directoryPath, savePath, callback){
                             // Set the nominal dimention
                             let dataColumn = cell.index[0]; // split column and row
                             let nominalColumnRaw = alphabet.indexOf(dataColumn.toUpperCase()); // we have go back in columns 
-                            let nominalColumn = parseInt(nominalColumnRaw) + defaultWorkSheet.nominalShift;
+                            let nominalColumn = parseInt(nominalColumnRaw) + parseInt(defaultWorkSheet.nominalShift);
                             let nominalRow = cell.index.substring(1); // remove letter from index to get only row
                             if(worksheet[`${alphabet[nominalColumn]}${nominalRow}`] != undefined){
                                 XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}2`});
@@ -71,17 +71,19 @@ function saveRaport(data, directoryPath, savePath, callback){
 
 
                             // Set the upper tol. and lower tol.
-                            if(worksheet[`${alphabet[nominalColumn - defaultWorkSheet.nominalShift + defaultWorkSheet.upperShift]}${nominalRow}`] != undefined){
-                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn - defaultWorkSheet.nominalShift + defaultWorkSheet.upperShift]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}3`});
+                            let upperColumn = parseInt(nominalColumn) - parseInt(defaultWorkSheet.nominalShift) + parseInt(defaultWorkSheet.upperShift);
+                            if(worksheet[`${alphabet[upperColumn]}${nominalRow}`] != undefined){
+                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[upperColumn]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}3`});
                             }else{
                                 XLSX.utils.sheet_add_aoa(newSheet, [[""]], {origin: `${alphabet[columnCounter]}3`});
                             }
-                            if(worksheet[`${alphabet[nominalColumn - defaultWorkSheet.nominalShift + defaultWorkSheet.lowerShift]}${nominalRow}`] != undefined){
-                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[nominalColumn - defaultWorkSheet.nominalShift + defaultWorkSheet.lowerShift]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}4`});
+                            let lowerColumn = parseInt(nominalColumn) - parseInt(defaultWorkSheet.nominalShift) + parseInt(defaultWorkSheet.lowerShift);
+                            if(worksheet[`${alphabet[lowerColumn]}${nominalRow}`] != undefined){
+                                XLSX.utils.sheet_add_aoa(newSheet, [[worksheet[`${alphabet[lowerColumn]}${nominalRow}`].v]], {origin: `${alphabet[columnCounter]}4`});
                             }else{
                                 XLSX.utils.sheet_add_aoa(newSheet, [[""]], {origin: `${alphabet[columnCounter]}4`});
                             }
-                            
+
                             // Set the filename cell
                             XLSX.utils.sheet_add_aoa(newSheet, [[file.toString()]], {origin: `B${rowCounter}`});
                             

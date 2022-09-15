@@ -48,19 +48,33 @@ ipcMain.on('chooseRaportsDirectory:req', async (e, arg)=>{
 
 // Save raports
 ipcMain.on('saveRaports', async (err, data)=>{
-    const file = await dialog.showSaveDialog(appWindow, {
-        properties: ['openFile'],
-        filters:[{ name: 'File', extensions: ['xlsx', 'xls'] }]
-    })
-    if(!file.canceled){ // check if the saving was canceled
-        if(reportsDirectory == undefined){
-            appWindow.webContents.send('saveRaports:res', {status: false, message: 'No directory path!'});
-        }else{
-            saveRaport(data, reportsDirectory, file.filePath, (result)=>{
-                appWindow.webContents.send('saveRaports:res', result);
+
+    let options  = {
+        buttons: ["Ok"],
+        message: "Before saving close all Excel windows!",
+        title: "Close windows",
+        noLink: true,
+    };
+    dialog.showMessageBox(options).then(async (result)=>{
+        // response: 0 - YES, 1 - NO
+        if(result.response == 0){
+            const file = await dialog.showSaveDialog(appWindow, {
+                properties: ['openFile'],
+                filters:[{ name: 'File', extensions: ['xlsx', 'xls'] }]
             })
+            if(!file.canceled){ // check if the saving was canceled
+                if(reportsDirectory == undefined){
+                    appWindow.webContents.send('saveRaports:res', {status: false, message: 'No directory path!'});
+                }else{
+                    saveRaport(data, reportsDirectory, file.filePath, (result)=>{
+                        appWindow.webContents.send('saveRaports:res', result);
+                    })
+                }
+            }
+        }else{
+            // do nothing - just close the window
         }
-    }
+    })
 })
 
 // Save templates
@@ -72,18 +86,32 @@ ipcMain.on("saveTemplate:req", (err, object)=>{
 
 // Get templates
 ipcMain.on("templates:req", (err, data)=>{
-    let templates = DB_templates.get('templates').value()
+    let templates = DB_templates.get('templates').value();
     appWindow.webContents.send('templates:res', templates);
 })
 
 // Delete template
 ipcMain.on("deleteTemplate:req", (err, id)=>{
-    let result = DB_deleteById(DB_templates, 'templates', id);
-    if(result){
-        appWindow.webContents.send('deleteTemplate:res', {status: true, message: "Template deleted!"});
-    }else{
-        appWindow.webContents.send('deleteTemplate:res', {status: false, message: "Can't delete template! Try again later..."});
-    }
+
+    let options  = {
+        buttons: ["Yes","No"],
+        message: "Are you sure?",
+        title: "Delete template",
+        noLink: true,
+    };
+    dialog.showMessageBox(options).then((result)=>{
+        // response: 0 - YES, 1 - NO
+        if(result.response == 0){
+            let result = DB_deleteById(DB_templates, 'templates', id);
+            if(result){
+                appWindow.webContents.send('deleteTemplate:res', {status: true, message: "Template deleted!"});
+            }else{
+                appWindow.webContents.send('deleteTemplate:res', {status: false, message: "Can't delete template! Try again later..."});
+            }
+        }else{
+            // do nothing - just close the window
+        }
+    })
     
 })
 

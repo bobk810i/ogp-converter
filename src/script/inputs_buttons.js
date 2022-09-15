@@ -34,7 +34,7 @@ appWindow.addEventListener('keydown', (e)=>{
         addCell();
     }
     if(e.key == 'Enter'){ // Enter key saves raport
-        saveCells();
+        // saveCells();
     }
 })
 
@@ -69,8 +69,9 @@ function saveCells(){
             if(indexNumber.toUpperCase() != indexNumber.toLowerCase()){ // check id index was written correctly - the rest is number
                 indexCorrext = false;
             }
-
-            obj["index"] = cellIndex;
+            
+            let indexToUpper = cellIndex.toUpperCase();
+            obj["index"] = indexToUpper;
             obj["name"] = cellName;
             cellsObject.push(obj);
         }
@@ -292,3 +293,8 @@ const settingsButton = document.getElementById('settings-button');
 settingsButton.addEventListener('click', (e)=>{
     ipcRenderer.send('settings', '');
 })
+
+// Tooltips
+tippy('.cell-index', {
+  content: 'Tooltip',
+});
