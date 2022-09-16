@@ -3,14 +3,15 @@ const url = require('url');
 const path = require('path');
 const saveRaport = require('./src/modules/saveRaport');
 const saveTemplate = require('./src/modules/saveTemplate');
-const {DB_templates, DB_config} = require('./src/database/database');
-const {DB_deleteById, DB_elementById, DB_editElement} = require('./src/database/DB_functions');
+const {DB_getElement, DB_editElement, DB_addElement, DB_deleteElement, DB_get} = require('./src/db/DB_Functions');
 const configId = '6h9ssbnqsl807pnzp';
 
 const {app, BrowserWindow, Menu, ipcMain, dialog} = electron;
 
 // Main app window variable
 let appWindow;
+const templates_db = 'templates.json';
+const config_db = 'config.json';
 
 //Choosen raports directory variable
 let reportsDirectory = '';
@@ -86,7 +87,7 @@ ipcMain.on("saveTemplate:req", (err, object)=>{
 
 // Get templates
 ipcMain.on("templates:req", (err, data)=>{
-    let templates = DB_templates.get('templates').value();
+    let templates = DB_get(templates_db, 'templates').data;
     appWindow.webContents.send('templates:res', templates);
 })
 
@@ -102,7 +103,7 @@ ipcMain.on("deleteTemplate:req", (err, id)=>{
     dialog.showMessageBox(options).then((result)=>{
         // response: 0 - YES, 1 - NO
         if(result.response == 0){
-            let result = DB_deleteById(DB_templates, 'templates', id);
+            let result = DB_deleteElement(templates_db, 'templates', id).status;
             if(result){
                 appWindow.webContents.send('deleteTemplate:res', {status: true, message: "Template deleted!"});
             }else{
@@ -127,13 +128,13 @@ ipcMain.on('mainPage', (err, data)=>{
 
 // Settings informations
 ipcMain.on('settings-info:req', (err, data)=>{
-    let element = DB_elementById(DB_config, 'config', configId);
+    let element = DB_getElement(config_db, 'config', configId).data;
     appWindow.webContents.send('settings-info:res', element);
 })
 
 // Settings - default sheet name
 ipcMain.on('settings-sheet:req', (err, newName)=>{
-    let result = DB_editElement(DB_config, 'config', configId, {"defaultSheetName": newName});
+    let result = DB_editElement(config_db, 'config', configId, {"defaultSheetName": newName}).status;
     if(result){
         appWindow.webContents.send('settings-sheet:res', {status: true, message: "Saved!"});
     }else{
@@ -143,7 +144,7 @@ ipcMain.on('settings-sheet:req', (err, newName)=>{
 
 // Settings default shifts values
 ipcMain.on('settings-shifts:req', (err, data)=>{
-    let result = DB_editElement(DB_config, 'config', configId, data);
+    let result = DB_editElement(config_db, 'config', configId, data).status;
     if(result){
         appWindow.webContents.send('settings-shifts:res', {status: true, message: "Saved!"});
     }else{
@@ -151,12 +152,13 @@ ipcMain.on('settings-shifts:req', (err, data)=>{
     }
 })
 
+// TESTS =================================
 
+// const {DB_getElement, DB_editElement, DB_addElement, DB_deleteElement} = require('./src/db/DB_Functions');
 
-
-
-
-
+// let status = DB_deleteElement('templates.json', 'templates', "6h9ssbedsl843z0k8");
+// console.log(status);
+// DB_addElement('templates.json', 'templates', {"data": "jeden"});
 
 
 

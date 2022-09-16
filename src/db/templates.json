@@ -1,0 +1,40 @@
+{
+  "templates": [
+    {
+      "templateName": "0256_J",
+      "template": [
+        {
+          "name": "A1 ŚREDNICA",
+          "index": "F9"
+        },
+        {
+          "name": "A2 ŚREDNICA",
+          "index": "F15"
+        },
+        {
+          "name": "B1 ŚREDNICA",
+          "index": "F12"
+        }
+      ],
+      "_id": "6h9ssbedsl843siwy"
+    },
+    {
+      "templateName": "temp1",
+      "template": [
+        {
+          "name": "asdasd",
+          "index": "G4"
+        },
+        {
+          "name": "asdasd",
+          "index": "B6"
+        },
+        {
+          "name": "demo",
+          "index": "G7"
+        }
+      ],
+      "_id": "6h9ssbfi4l84gf7rz"
+    }
+  ]
+}

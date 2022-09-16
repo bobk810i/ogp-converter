@@ -207,8 +207,8 @@ ipcRenderer.on("saveTemplate:res", (err, response)=>{
 // Load templates list
 ipcRenderer.send("templates:req", ''); // request for templates list
 ipcRenderer.on("templates:res", (err, data)=>{
-    templatesGlobal = data; // put tamplates into global variable
-    loadTemplates(data);
+    templatesGlobal = data.templates; // put tamplates into global variable
+    loadTemplates(data.templates);
 })
 
 const templateTemplate = document.getElementById('search-list-template');
@@ -294,7 +294,3 @@ settingsButton.addEventListener('click', (e)=>{
     ipcRenderer.send('settings', '');
 })
 
-// Tooltips
-tippy('.cell-index', {
-  content: 'Tooltip',
-});

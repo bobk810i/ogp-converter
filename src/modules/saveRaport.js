@@ -1,8 +1,8 @@
 const XLSX = require("xlsx");
 const fs = require('fs'); 
 const path = require('path');
-const {DB_config} = require('../database/database');
-const {DB_addElement, DB_elementById} = require('../database/DB_functions');
+const {DB_getElement, DB_editElement, DB_addElement, DB_deleteElement, DB_get} = require('../db/DB_Functions');
+const config_db = 'config.json';
 const configId = '6h9ssbnqsl807pnzp';
 
 const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -44,7 +44,7 @@ function saveRaport(data, directoryPath, savePath, callback){
                      if(name == 'xls' || name == 'xlsx'){
 
                         const wb = XLSX.readFile(path.join(directoryPath, file), {sheetStubs: true});
-                        const defaultWorkSheet = DB_elementById(DB_config, 'config', configId);
+                        const defaultWorkSheet = DB_getElement(config_db, 'config', configId).data;
                         const worksheet = wb.Sheets[defaultWorkSheet.defaultSheetName]; // DEFAULT SHEET NAME FROM DB
 
                         data.forEach((cell)=>{ // write each cell that user wrote in program
